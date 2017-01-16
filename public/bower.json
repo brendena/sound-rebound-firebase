@@ -1,0 +1,13 @@
+{
+  "name": "sound-rebound-firebase",
+  "authors": [
+    "brendena <cerebralasylum1@gmail.com>"
+  ],
+  "description": "This is just the upload for firebase",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "",
+  "dependencies": {
+    "sound-rebound": "brendena/sound-rebound"
+  }
+}
