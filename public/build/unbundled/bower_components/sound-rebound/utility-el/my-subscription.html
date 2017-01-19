@@ -1,0 +1,93 @@
+<html><head><link rel="import" href="../../polymerfire/firebase-auth.html">
+<link rel="import" href="../../polymerfire/firebase-document.html">
+<link rel="import" href="../../polymerfire/firebase-messaging.html">
+<link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../utility-el/paper-dialog-message.html">
+<link rel="import" href="../../iron-icons/social-icons.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+
+</head><body><dom-module id="my-subscription">
+  <template>
+  <style>
+
+  </style>
+  <firebase-auth id="auth" user="{{user}}" signed-in="{{signedIn}}">
+  </firebase-auth>
+
+
+  <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage">
+  </firebase-messaging>
+
+  <firebase-document id="documentToken" path="/notification_token/[[user.uid]]/token" data="[[token]]">
+  </firebase-document>
+
+  <firebase-document id="documentDisabledNotification" path="/notification_token/[[user.uid]]/disabled_global_notifications" data="{{checked}}">
+  </firebase-document>
+
+  <paper-toggle-button id="subscribe" on-tap="toggleSubscription" checked="{{checked}}">
+    <iron-icon icon="social:notifications-none" hidden$="[[!checked]]"></iron-icon>
+    <iron-icon icon="social:notifications-off" hidden$="[[checked]]" style="color:inherit"></iron-icon> 
+  </paper-toggle-button>
+   
+
+
+  <paper-dialog-message id="errorDialog"></paper-dialog-message>
+  
+  </template>
+  <script>
+    Polymer({
+      is: 'my-subscription',
+      properties:{
+        token: {
+          type: String,
+          value: ""
+        },
+        user: {
+          type: Object,
+          value: function(){
+            return {};
+          }
+        },
+        checked: {
+          type: Boolean,
+          value: false
+        }
+      },
+      observers:["_updateToken(user,token)"],
+      /*
+        This update the value of token.
+
+        You need this because token can be fired before user get set.
+        If this happens then nothing happens.  User need to authenticated 
+        by a server so if you have notifications on and load the app it will not
+        fire before token get set.
+      */
+      _updateToken: function(user,token){
+        if(typeof user !== "undefined" && typeof token !== "undefined"){
+          this.$.documentToken.data = this.token;  
+        }
+      },
+      closeDialog: function(){
+        this.$.errorDialog.close();
+      },
+      toggleSubscription: function() {
+        var requestPermission = this.$.subscribe.checked;
+        if (requestPermission) {
+          this.$.messaging.requestPermission().then(() => {
+            //console.log('user subscribed successfully!');
+          }, (err) => {
+            console.log('user subscribe failed :(', err);
+            this.$.subscribe.checked = false;
+            this.$.errorDialog.open("error", "Check to make sure you haven't blocked notifications.");
+          });
+        } else {
+          console.log('user rejected permission');
+        }
+      },
+      handleMessage: function(){
+        console.log('message recived', arguments);
+      }
+    });
+  </script>
+</dom-module>
+</body></html>

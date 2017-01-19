@@ -1,0 +1,25 @@
+<html><head><link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+
+
+
+</head><body><dom-module id="paper-dialog-message">
+  <template>
+    <style>
+
+    </style>
+    
+  <paper-dialog entry-animation="scale-up-animation" exit-animation="fade-out-animation" id="message">
+    <h2>[[header]]</h2>
+    <p>
+      [[paragraphText]]
+    </p>
+    <paper-button on-tap="close">close</paper-button>
+  </paper-dialog>
+
+  </template>
+  <script>Polymer({is:"paper-dialog-message",properties:{header:{type:String,value:""},paragraphText:{type:String,value:""}},open:function(e,a){this.header=e,this.paragraphText=a,this.$.message.open()},close:function(){this.$.message.close()}});</script>
+</dom-module>
+</body></html>

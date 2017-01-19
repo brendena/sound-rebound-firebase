@@ -1,0 +1,22 @@
+<html><head><link rel="import" href="./notification-time-edit.html">
+<link rel="import" href="../utility-el/day-array-behavior.html">
+
+
+
+
+</head><body><dom-module id="notification-time-edit-prep">
+  <style>
+
+  
+  </style>
+  <template>
+    
+    <template is="dom-repeat" items="{{notificationDaysArray}}" as="day">
+        <notification-time-edit day="[[day.day]]" start="{{day.start}}" end="{{day.end}}"></notification-time-edit>
+    </template>
+    
+    
+  </template>
+  <script>Polymer({is:"notification-time-edit-prep",behaviors:[MyBehaviors.DayArrayBehavior],properties:{days:{type:Array,observer:"_changedNotificationDates",value:function(){return[]}},notificationDaysArray:{type:Array,value:function(){return[]}}},_changedNotificationDates:function(i){"undefined"!=typeof i&&(console.log("_changedNotificationDates"),this.notificationDaysArray=this._changedNDates())}});</script>
+</dom-module>
+</body></html>

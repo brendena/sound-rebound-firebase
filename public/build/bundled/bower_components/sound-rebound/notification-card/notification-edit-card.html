@@ -1,0 +1,72 @@
+<html><head><link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">  
+<link rel="import" href="../../paper-slider/paper-slider.html">  
+<link rel="import" href="../../paper-fab/paper-fab.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../utility-el/sensitivity-selector.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+
+<link rel="import" href="./notification-time-edit-prep.html">
+
+
+
+</head><body><dom-module id="notification-edit-card">
+  <style>
+      #closeButton{
+        position:absolute;
+        top: -50px;
+        left: -25px;
+      }
+      paper-card:{
+        overflow: auto;
+      }
+      #paddingDiv{
+        padding: 10px
+      }
+      paper-dialog{
+        /*transition: 1s;*/
+      }
+      paper-button{
+        min-width:50%;
+      }
+  </style>
+  <template>
+  <paper-dialog id="editNotificationModule" modal="false">
+    
+      <paper-fab id="closeButton" icon="close" on-tap="close"></paper-fab>
+
+        <div class="card-content">
+           <h2>[[singleNote.name]]</h2>   
+        </div>
+        <paper-dialog-scrollable>
+          <div id="paddingDiv">
+            <div>
+                <paper-toggle-button checked="{{singleNote.repeatingNotification}}"> repeating notification</paper-toggle-button>
+            </div>
+            <div>
+                <paper-toggle-button checked="{{singleNote.timeNotification}}"> enable time specific notes</paper-toggle-button>
+            </div>
+            <div>
+              
+            </div>
+            <div id="notificationTimeEditsContainer">
+              <notification-time-edit-prep id="notificationTPrep" days="{{singleNote.notificationDays}}"></notification-time-edit-prep>
+            </div>
+          
+            <div>
+              <sensitivity-selector sensitivity="{{singleNote.sensitivity}}"></sensitivity-selector>
+            </div>
+          </div>
+        </paper-dialog-scrollable>
+        <div style="display:flex; justify-content:space-around">
+          <paper-button on-tap="submit" raised=""> Submit </paper-button>
+          <paper-button on-tap="delete" raised="">delete</paper-button>
+        </div>
+         
+    
+  </paper-dialog>  
+  </template>
+  <script>Polymer({test:function(){console.log(this.singleNote)},is:"notification-edit-card",properties:{singleNote:{type:Object,reflectToAttribute:!0,value:function(){return{name:"default",disabledNotification:!1,repeatingNotification:!1,timeNotification:!1,sensitivity:0,notificationDays:[],$key:"0"}}}},observers:["_closeOpenSpecificTimeSelector(singleNote.timeNotification)"],submit:function(){console.log("fired subitNotficationChange"),console.log(this.$.notificationTPrep.notificationDaysArray);for(var i=this.$.notificationTPrep.notificationDaysArray,t=["M","T","W","Th","F","S","SU"],e={},o=0;o<t.length;o++)if("00:00"!=i[o].start||"00:00"!=i[o].end){t[o];e[t[o]]=i[o]}console.log(t),this.singleNote.notificationDays=e,console.log(this.singleNote),this.fire("submitNotification",{singleNote:this.singleNote})},delete:function(){this.fire("deleteNotification")},open:function(){this.setDialog(!0),this.$.editNotificationModule.open()},close:function(){this.$.editNotificationModule.close()},_closeOpenSpecificTimeSelector:function(i){"undefined"!=typeof i&&(i===!0?this.$.notificationTimeEditsContainer.hidden=!1:i===!1&&(this.$.notificationTimeEditsContainer.hidden=!0)),this.$.editNotificationModule.notifyResize()},setDialog:function(i){if(i){var t=this.$.editNotificationModule,e=document.querySelector("body");e.appendChild(t)}}});</script>
+</dom-module></body></html>

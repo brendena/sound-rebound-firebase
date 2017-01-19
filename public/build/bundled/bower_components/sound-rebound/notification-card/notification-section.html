@@ -1,0 +1,67 @@
+<html><head><link rel="import" href="../../app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+
+<link rel="import" href="../../polymerfire/firebase-auth.html">
+<link rel="import" href="../../polymerfire/firebase-query.html">
+<link rel="import" href="../../polymerfire/firebase-document.html">
+
+
+<link rel="import" href="./notification-add.html">
+<link rel="import" href="./notification-card.html">
+<link rel="import" href="./notification-edit-card.html">
+
+
+
+</head><body><dom-module id="notification-section">
+  <template>
+    <style>
+      /*  
+      notification-card notification-add{
+        display:flex;
+        float: left;
+      }
+      */
+      :host{
+        display:flex;
+        @apply(--layout-wrap);
+        @apply(--layout-horizontal);
+
+      };
+      notification-add, notification-card{
+        flex:1;
+        padding: 20px;
+      }
+
+      @media (max-width: 600px) {
+        notification-add, notification-card {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      
+    </style>
+
+    <firebase-auth id="auth" online="{{online}}" user="{{user}}">
+    </firebase-auth>
+
+    <firebase-query id="query" path="/users/[[user.uid]]" data="{{notifications}}">
+    </firebase-query>
+
+    <firebase-document id="firebaseDoc" path="/users/[[user.uid]]/[[specificNotification]]" data="{{editingNotification}}">
+    </firebase-document>
+    
+    <template is="dom-repeat" items="[[notifications]]" as="notification">
+      <notification-card single-note="[[notification]]" disabled="[[!online]]"></notification-card>
+    </template>
+
+    <notification-add list-of-notification-names="[[listNotificationNames]]" disabled="[[!online]]"></notification-add>
+
+
+    <notification-edit-card id="editNotificationModule" single-note="[[editingNotification]]"></notification-edit-card>
+
+
+
+  </template>
+  <script>Polymer({is:"notification-section",properties:{listNotificationNames:{type:Array,value:function(){return[]}},notifications:{type:Array,value:function(){return[]}},specificNotification:{type:String,value:"default"},signedIn:{type:Boolean,value:!1}},observers:["_updateListNotificationNames(notifications.*)"],listeners:{editNotification:"_editNotification",updateDisabledValue:"_updateDisabledValue",deleteNotification:"_deleteNotification",addNotification:"_addNotification",submitNotification:"_submitNotification"},_editNotification:function(i){this.specificNotification=i.detail.singleNote.$key,this.$.editNotificationModule.open()},_updateDisabledValue:function(i){console.log(i.detail.disabledNotification),this.$.query.ref.child(i.detail.$key).update({disabledNotification:i.detail.disabledNotification})},_deleteNotification:function(i){"undefined"==typeof i.detail.$key?(this.$.firebaseDoc.destroy(),this.$.editNotificationModule.close()):this.$.query.ref.child(i.detail.$key).remove()},_addNotification:function(i){this.$.query.ref.push(i.detail.newNotification)},_submitNotification:function(i){var t=this.$.firebaseDoc;t.data="",t.data=i.detail.singleNote,console.log("submited notification"),this.$.editNotificationModule.close()},_updateListNotificationNames:function(i){if("undefined"!=typeof i.base&&i.base.length!=this.listNotificationNames.length){for(var t=[],e=this.$.query.data,o=0;o<e.length;o++)null!=e[o].name&&void 0!=e[o].name&&t.push(e[o].name);console.log("going through"),this.listNotificationNames=t}}});</script>
+</dom-module>
+</body></html>

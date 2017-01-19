@@ -1,0 +1,57 @@
+<html><head><link rel="import" href="../../iron-input/iron-input.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+
+<link rel="import" href="../utility-el/time-input.html">
+
+
+</head><body><dom-module id="notification-time-edit">
+  <style>
+      /*
+      https://codingwithgerwin.blogspot.com/2016/04/polymer-and-hidden-attribute.html
+      @apply(--layout-flex);
+      */
+      :host{
+        display:block;
+        padding:5px;
+        
+      };
+
+      p[[hidden]]{
+          display: none;
+      }  
+      #div2{
+        display: flex;
+        @apply(--layout-horizontal);
+      }
+    paper-checkbox{
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+    @media (max-width: 500px) {
+
+      
+      time-input{
+        @apply(--layout-vertical);
+      }
+
+
+    }
+
+  </style>
+  <template>
+    
+    <div id="div2">
+        <paper-checkbox checked="{{enabledInput}}" style="float:left">
+            [[day]]
+        </paper-checkbox>
+        <div id="div3">
+            <time-input id="start" enabled="{{enabledInput}}" time="{{start}}" invalid="{{startInvalid}}"></time-input>
+            <time-input id="end" enabled="{{enabledInput}}" time="{{end}}" invalid="{{endInvalid}}"></time-input>
+        <div>
+    </div>
+    
+  </div></div></template>
+  <script>Polymer({is:"notification-time-edit",properties:{day:{type:String,value:"default"},start:{type:String,notify:!0,value:"00:00"},end:{type:String,notify:!0,value:"00:00"},startInvalid:{type:Boolean,value:!1},endInvalid:{type:Boolean,value:!1},error:{type:Boolean,value:!0}},observers:["_checkInput(start, end)"],attached:function(){this._disableCheck()},_checkInput:function(e,t){this._disableCheck(),console.log("checkInput got fired");var n=/[:]/;e=e.replace(n,""),t=t.replace(n,""),e>t?(this.startInvalid=!0,this.endInvalid=!0):(this.startInvalid=!1,this.endInvalid=!1)},_disableCheck:function(){"00:00"==this.start&&"00:00"==this.end?this.enabledInput=!1:this.enabledInput=!0}});</script>
+</dom-module>
+</body></html>

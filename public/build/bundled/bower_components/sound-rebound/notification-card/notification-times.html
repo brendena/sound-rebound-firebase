@@ -1,0 +1,25 @@
+<html><head><link rel="import" href="../../paper-input/paper-input.html">  
+<link rel="import" href="../../paper-slider/paper-slider.html">  
+<link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
+
+<link rel="import" href="../utility-el/day-array-behavior.html">
+
+
+
+</head><body><dom-module id="notification-times">
+    <style>
+    span{
+        color: var(--accent-color);
+    }
+    </style>
+  <template>
+    <div>
+        <p>
+            <template is="dom-repeat" items="[[notificationDatesArray]]" as="day">
+                 <span>[[day.day]]</span> [[day.start]]-[[day.end]]   
+            </template>
+        </p>
+    </div>
+  </template>
+  <script>Polymer({is:"notification-times",behaviors:[MyBehaviors.DayArrayBehavior],properties:{days:{type:Object,reflectToAttribute:!0,observer:"_changedNotificationDates",value:function(){return{}}},notificationDatesArray:{type:Array,value:function(){return[]}}},ready:function(){this._changedNotificationDates()},_changedNotificationDates:function(){console.log("changed notification-dates"),console.log(this.days),this.notificationDatesArray=this._sortArray(this.days),console.log(this.notificationDatesArray)}});</script>
+</dom-module></body></html>

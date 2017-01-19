@@ -1,0 +1,37 @@
+<html><head><link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../utility-el/paper-dialog-message.html">
+
+
+</head><body><dom-module id="page-account-setting">
+  <template>
+    <style>
+      paper-button{
+
+        width:100%;
+      }
+      #padding{
+        padding-top: 40px;
+      }
+      paper-button{
+        margin-top:10px;
+      }
+    </style>
+    
+      <firebase-auth id="auth" provider="google" user="{{user}}"> 
+      </firebase-auth>
+      <div id="padding">
+          <paper-button on-tap="deleteAccount">delete Account</paper-button>
+          <paper-button on-tap="resetPassword">reset password</paper-button>
+          <paper-button on-tap="signOut">sign out</paper-button>
+
+          
+      </div>  
+
+      <paper-dialog-message id="message"></paper-dialog-message>
+
+  </template>
+  <script>Polymer({is:"page-account-setting",properties:{user:{type:"Object",value:function(){return{}}}},deleteAccount:function(){},signOut:function(){this.$.auth.signOut().then(function(){console.log("signed out")},function(o){console.log(o),console.log("not signed out")})},deleteAccount:function(){var o=this.$.auth.app.auth(),e=o.currentUser,n="";e.delete().then(function(){},function(o){console.log(n),n=o}),""!=n&&this.$.message.open("something wen't wrong","account not deleted.  Try loging out and back in again")},resetPassword:function(){var o=this.$.auth.app.auth(),e=o.currentUser,n="";if(null!=e)for(var t=0;t<e.providerData.length;t++)"password"==e.providerData[t].providerId&&(n=e.providerData[t].email);""!=n?(o.sendPasswordResetEmail(n).then(function(){console.log("all good")},function(o){console.log(o)}),this.$.message.open("email sent","please check your email mail box for instruction on password reset")):this.$.message.open("can't reset","I can only reset password and email, not google log in")},googleLogIn:function(){var o=this.$.auth.app.auth();console.log(this.$.auth.app.auth);var e=o.GoogleAuthProvider.credential(googleUser.getAuthResponse().id_token);o.currentUser.link(e).then(function(o){console.log("Anonymous account successfully upgraded",o)},function(o){console.log("Error upgrading anonymous account",o)})}});</script>
+</dom-module>
+</body></html>

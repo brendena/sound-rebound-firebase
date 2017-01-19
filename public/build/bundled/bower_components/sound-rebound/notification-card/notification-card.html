@@ -1,0 +1,91 @@
+<html><head><link rel="import" href="../../paper-card/paper-card.html">  
+<link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+
+
+<link rel="import" href="../utility-el/sensitivity-selector.html">
+<link rel="import" href="./notification-times.html">
+
+
+
+
+</head><body><dom-module id="notification-card">
+  <style is="custom-style">
+    :host{
+      min-width:250px;
+
+    };
+
+    paper-card.disabled{
+      background: rgba(208, 208, 208, 0.79);
+    };
+    
+    /*
+    paper-toggle-button{
+      --paper-toggle-button-label-color: blue;
+    }
+    /*
+    maby try and use a mixin to get by the disabled color thing
+
+    you can not style a disabled paper-toggle button
+
+    */
+
+    /*
+    I like the idea of just scalling everthing for desktop
+    but the problem is that the auto div or paper-card doesn't 
+    retain the size
+    paper-card{
+      transform: scale(2,2);
+    }
+    */
+  </style>
+  <template>
+
+    <paper-card id="paperCard">
+      <div class="card-content">
+        <div>
+
+            <h4>[[singleNote.name]]  
+                                                                                                     
+              <paper-icon-button id="buttonLaunchNotificationEdit" on-tap="editNotificationLauncher" icon="create" disabled="[[disabledNotification]]">
+              </paper-icon-button>
+                                                                  
+              <paper-icon-button id="buttonLaunchNotificationEdit" on-tap="deleteNotification" icon="delete"> </paper-icon-button>
+            </h4>   
+         </div>
+         <div>
+
+
+              <paper-toggle-button id="disableToggle" on-tap="toggleDisable" checked="{{singleNote.disabledNotification}}" disabled="[[disabled]]">disable 
+
+              </paper-toggle-button>
+              <paper-toggle-button checked="[[singleNote.repeatingNotification]]" disabled="">repeating notification
+
+
+              </paper-toggle-button>
+              <paper-toggle-button checked="[[singleNote.timeNotification]]" disabled="">time sensitive notification
+
+                
+              </paper-toggle-button>
+
+          </div>
+          <div>
+            <p>[[singleNote.sensitivity]]/100 sensitivity levels</p>
+        </div>
+      </div>
+
+      
+      <div id="timeNotificationDisplay" class="card-actions">
+          <notification-times days="[[singleNote.notificationDays]]"></notification-times>
+      </div>
+
+    </paper-card>
+
+        
+        
+  </template>
+  <script>Polymer({is:"notification-card",ready:function(){},attached:function(){this._disabledLogic()},properties:{singleNote:{type:Object,reflectToAttribute:!0,value:function(){return{name:"default",sensitivity:0,notificationDates:[],repeatingNotification:!1,disabledNotification:!1,timeNotification:!1}}},disabled:{type:Boolean,reflectToAttribute:!0,value:!0},disabledNotification:{type:Boolean,value:!0}},observers:["_toggletimeNotificationDisplay(singleNote.timeNotification)","_checkDisabled(disabled, singleNote.disabledNotification)"],toggleDisable:function(){this._disabledLogic(),this.singleNote.disabledNotification=!this.singleNote.disabledNotification,this.fire("updateDisabledValue",{$key:this.singleNote.$key,disabledNotification:!this.singleNote.disabledNotification})},_disabledLogic:function(){this.singleNote.disabledNotification?(this.classList.add("disabled"),this.$.paperCard.classList.add("disabled")):(this.classList.remove("disabled"),this.$.paperCard.classList.remove("disabled"))},editNotificationLauncher:function(){this.fire("editNotification",{singleNote:this.singleNote})},deleteNotification:function(){this.fire("deleteNotification",{$key:this.singleNote.$key})},_toggletimeNotificationDisplay:function(i){i?this.$.timeNotificationDisplay.hidden=!1:this.$.timeNotificationDisplay.hidden=!0},_checkDisabled:function(i,t){"undefined"==typeof i&&"undefined"==typeof t||(1==i||1==t?this.disabledNotification=!0:this.disabledNotification=!1)}});</script>
+</dom-module></body></html>

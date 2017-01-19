@@ -1,0 +1,74 @@
+<html><head><link rel="import" href="../../iron-list/iron-list.html">
+<link rel="import" href="../../paper-item/paper-item.html">
+<link rel="import" href="../../iron-ajax/iron-ajax.html">
+<link rel="import" href="../../iron-selector/iron-selector.html">
+
+
+</head><body><dom-module id="page-about">
+  <template>
+    <style>
+      #padding{
+        padding-top: 20px;
+      }
+      .item{
+        max-width: 800px;
+        width:80%;
+        margin: 0 auto;
+        text-align: center;
+        align-content: center;
+        box-shadow: 1px 1px 1px #888888;
+        margin-bottom: 10px;
+        display:block;
+      }
+      /*
+      @media (max-width: 800px){
+        .item{
+          max-width: 90vw;
+        }
+      }
+      */
+      .primary {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .questionTitle, .longText {
+        font-size: 14px;
+      }
+      .longText {
+        color: gray;
+        display: none;
+      }
+      .item:hover .questionTitle::after {
+        content: ' [+]';
+        color: gray;
+      }
+      .item.expanded:hover .questionTitle::after {
+        content: '';
+      }
+      .item.expanded .longText {
+        display: block;
+      }
+      .item.expanded:hover .longText::after {
+        content: ' [–]';
+      }
+
+    </style>
+    <iron-ajax auto="" url="./questions.json" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
+
+      <div id="padding">
+        <template is="dom-repeat" items="[[ajaxResponse.questions]]" as="item">
+
+            <div class$="[[getClassForItem(item, item.active)]]" on-click="switchClass">
+               <paper-item class="questionTitle">[[ item.questionTitle ]]</paper-item>
+               <div class="pad">
+                    <div class="longText">asdfasfd</div>
+              </div>
+            </div>
+          
+        </template>
+
+      </div>
+  </template>
+  <script>Polymer({is:"page-about",properties:{ajaxResponse:{type:Object,observer:"setActiveFalse",value:function(){return{}}}},getClassForItem:function(e,s){return s?"item expanded ":"item "},switchClass:function(e){e.model.set("item.active",!e.model.item.active)},setActiveFalse:function(){if("undefined"!=typeof this.ajaxResponse&&null!=this.ajaxResponse&&"undefined"!=typeof this.ajaxResponse.questions)for(var e=0;e<this.ajaxResponse.questions.length;e++)this.ajaxResponse.questions[e].active=!1}});</script>
+</dom-module>
+</body></html>

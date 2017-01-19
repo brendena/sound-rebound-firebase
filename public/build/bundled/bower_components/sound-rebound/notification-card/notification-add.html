@@ -1,0 +1,56 @@
+<html><head><link rel="import" href="../../polymerfire/firebase-auth.html">
+<link rel="import" href="../../polymerfire/firebase-query.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../paper-listbox/paper-listbox.html">
+<link rel="import" href="../../paper-item/paper-item.html">
+<link rel="import" href="../../paper-card/paper-card.html">  
+
+<link rel="import" href="./notification-card.html">
+
+
+</head><body><dom-module id="notification-add">
+  <template>
+    <style>
+      :host{
+        min-width:200px;
+      };
+      paper-card{
+        background: var(--light-primary-color);
+      }
+      paper-card.disabled{
+        background: rgba(208, 208, 208, 0.79);
+      }
+      paper-button.add[disabled]{
+       background: rgba(150, 150, 150, 1); 
+      }
+    </style>
+
+    <firebase-auth id="auth" user="{{user}}">
+    </firebase-auth>
+
+    <firebase-query id="query" path="/list_sounds" data="{{listSounds}}">
+    </firebase-query>
+
+    <firebase-query id="usersAccount" path="/users/[[user.uid]]">
+    </firebase-query>
+
+    <paper-card id="paperCard">
+      <div class="cafe-header">
+        <p id="headerInformation"></p>
+      </div>
+      <paper-dropdown-menu label="select sound to add" disabled="[[disabledNoMoreNotifications]]">
+        <paper-listbox id="paperList" class="dropdown-content" selected="{{selectedSound}}">
+          <template is="dom-repeat" items="[[listSoundsNotificationNamesFiltered]]" as="sound"> 
+             <paper-item value="[[sound.$val]]">[[sound.$val]]</paper-item>
+          </template>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      <div>
+        <paper-button class="add" on-tap="addNotification" disabled="[[disabledNoMoreNotifications]]">add</paper-button>
+      </div>
+    </paper-card>
+  </template>
+  <script>Polymer({is:"notification-add",test:function(){console.log(this.listSoundsNotificationNamesFiltered)},properties:{listOfNotificationNames:{type:Array,value:function(){return[]}},listSoundsNotificationNamesFiltered:{type:Array,value:function(){return[]}},listSounds:{type:Array,value:function(){return[]}},disabledNoMoreNotifications:{type:Boolean,value:!1},selectedSound:{type:Number,value:-1},disabled:{type:Boolean,reflectToAttribute:!0,observer:"checkNeedsDisabled",value:!0}},observers:["_filterListOfNoticationsNames(listSounds.*)","_filterListOfNoticationsNames(listOfNotificationNames.*)"],addNotification:function(){this.fire("addNotification",{newNotification:{name:this.listSoundsNotificationNamesFiltered[this.selectedSound].$val,sensitivity:0,notificationDates:[],repeatingNotification:!1,disabledNotification:!1,timeNotification:!1,notificationDays:[]}}),this.$.paperList.selected=-1},_filterListOfNoticationsNames:function(){var i=[];if(null!==this.listOfNotificationNames&&void 0!==this.listOfNotificationNames&&"undefined"!=typeof this.listOfNotificationNames[0]&&null!==this.$.query.data[0]&&void 0!==this.$.query.data[0]){for(var t=0;t<this.$.query.data.length;t++)for(var e=0;e<this.listOfNotificationNames.length&&this.listOfNotificationNames[e]!==this.$.query.data[t].$val;e++)e==this.listOfNotificationNames.length-1&&i.push(this.$.query.data[t]);this.listSoundsNotificationNamesFiltered=i.sort()}else this.listSoundsNotificationNamesFiltered=this.$.query.data.sort().slice();this.checkNeedsDisabled()},checkNeedsDisabled:function(){"undefined"==typeof this.listSoundsNotificationNamesFiltered[0]||1==this.disabled?(this.$.paperCard.classList.add("disabled"),this.disabledNoMoreNotifications=!0,1==this.disabled?this.$.headerInformation.innerHTML="you are currently offline":this.$.headerInformation.innerHTML="there's no more notification options"):(this.$.paperCard.classList.remove("disabled"),this.disabledNoMoreNotifications=!1,this.$.headerInformation.innerHTML="choose a notification to add")}});</script>
+</dom-module>
+</body></html>

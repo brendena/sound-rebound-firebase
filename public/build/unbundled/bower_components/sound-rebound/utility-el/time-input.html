@@ -1,0 +1,21 @@
+<html><head><link rel="import" href="../../paper-input/paper-input.html">  
+
+
+</head><body><dom-module id="time-input">
+  <style>
+    :host{
+      width:200px;
+      float:left;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 5px;
+    };
+  </style>
+  <template>
+
+        
+        <paper-input id="paperInput" label="this input is manually validated" required="" type="time" disabled="[[!enabled]]" bind-value="{{time}}" error-message="letters only!" invalid="{{invalid}}"> </paper-input>
+           
+  </template>
+  <script>Polymer({is:"time-input",properties:{enabled:{type:Boolean,value:!1},time:{type:String,notify:!0,observer:"check",value:"00:00"},invalid:{type:Boolean,notify:!0,value:!1}},check:function(){this.$.paperInput.value=this.time}});</script>
+</dom-module></body></html>
