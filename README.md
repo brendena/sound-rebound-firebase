@@ -10,6 +10,10 @@ push my code to firebase hosting
 
 `
 sudo npm update -g sound-rebound
+`
+`
 sudo firebase serve # to test to make sure it works
+`
+`
 sudo firebase deploy
 `
