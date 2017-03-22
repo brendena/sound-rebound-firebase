@@ -5,8 +5,8 @@
     "start_url": "index.html",
     "display": "standalone",
     "orientation": "any",
-    "theme_color": "#757575",
-    "background_color":"#757575",
+    "theme_color": "#ff4081",
+    "background_color":"#ff4081",
       "icons": [
       {
         "src": "img/mstile-70.png",
